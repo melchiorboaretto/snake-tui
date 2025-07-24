@@ -13,7 +13,8 @@ pub struct Snake {
 
 impl Snake {
     pub fn new(x: u16, y: u16) -> Self {
-        let body = VecDeque::from([(x, y)]);
+        let mut body = VecDeque::from([(x, y)]);
+        body.push_back((x - 1, y));
         Snake {
             body,
             speed: 1,
