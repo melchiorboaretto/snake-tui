@@ -63,12 +63,6 @@ impl Snake {
             // Suppose new_head_x and new_head_y are both greater than or eq. to zero.
             let new_head = (new_head_x as u16, new_head_y as u16);
 
-            for segment in self.body.iter().skip(1) {
-                if new_head == *segment {
-                    return None;
-                }
-            }
-
             self.body.push_front(new_head);
 
             // Pops the snake tail
@@ -76,6 +70,13 @@ impl Snake {
                 self.body.pop_back();
             } else {
                 self.has_eaten = false;
+            }
+
+            // Test if the snake hit itself
+            for segment in self.body.iter().skip(1) {
+                if new_head == *segment {
+                    return None;
+                }
             }
         }
 
