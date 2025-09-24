@@ -10,14 +10,14 @@ Be sure to have:
 
 
 ```
-git clone https://github.com/Me1chi/snake-tui.git
+git clone https://github.com/melchiorboaretto/snake-tui.git
 cd snake-tui
 cargo install --path .
 ```
 
 Or simply
 ```
-cargo install --git https://github.com/Me1chi/snake-tui.git
+cargo install --git https://github.com/melchiorboaretto/snake-tui.git
 ```
 
 
