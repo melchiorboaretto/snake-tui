@@ -9,6 +9,7 @@ pub struct Snake {
     pub tick_counter: u16,
     pub dir: Direction,
     pub has_eaten: bool,
+    pub changing_dir: bool,
 }
 
 impl Snake {
@@ -21,6 +22,7 @@ impl Snake {
             tick_counter: 0,
             dir: Direction::default(),
             has_eaten: false,
+            changing_dir: false,
         }
     }
 
@@ -37,7 +39,7 @@ impl Snake {
             };
 
         self.tick_counter = self.tick_counter.wrapping_add(1);
-        if self.speed != 0 && self.tick_counter % (speed_tuning / speed).max(1) == 0 {
+        if self.speed != 0 && self.tick_counter.is_multiple_of((speed_tuning / speed).max(1)) {
             let head_ref = self.body.front();
             let head: (i32, i32);
             if let Some(value) = head_ref {
@@ -74,10 +76,13 @@ impl Snake {
             }
 
             // Test if the snake hit itself
-            for segment in self.body.iter().skip(1) {
-                if new_head == *segment {
-                    return None;
+            if !self.changing_dir {
+                for segment in self.body.iter().skip(1) {
+                    if new_head == *segment {
+                        return None;
+                    }
                 }
+                self.changing_dir = false;
             }
         }
 
@@ -121,14 +126,14 @@ impl Direction {
         };
     }
 
-    pub fn change_direction_no_reverse_arrow(&mut self, new_dir: KeyCode) {
+    pub fn change_direction_no_reverse_arrow(&mut self, new_dir: KeyCode) -> bool {
         use Direction::*;
         match new_dir {
-            KeyCode::Right => self.change_direction_no_reverse(Right),
-            KeyCode::Left => self.change_direction_no_reverse(Left),
-            KeyCode::Up => self.change_direction_no_reverse(Up),
-            KeyCode::Down => self.change_direction_no_reverse(Down),
-            _ => (),
+            KeyCode::Right => {self.change_direction_no_reverse(Right); true},
+            KeyCode::Left => {self.change_direction_no_reverse(Left); true},
+            KeyCode::Up => {self.change_direction_no_reverse(Up); true},
+            KeyCode::Down => {self.change_direction_no_reverse(Down); true},
+            _ => false,
         }
     }
 

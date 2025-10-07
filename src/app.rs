@@ -151,8 +151,8 @@ impl App {
                 ']' => self.snake.inc_speed(),
                 _ => {}
             }
-        } else {
-            self.snake.dir.change_direction_no_reverse_arrow(key.code);
+        } else if self.snake.dir.change_direction_no_reverse_arrow(key.code) {
+            self.snake.changing_dir = true;
         }
     }
 
