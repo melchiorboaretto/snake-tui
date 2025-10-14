@@ -9,7 +9,6 @@ pub struct Snake {
     pub tick_counter: u16,
     pub dir: Direction,
     pub has_eaten: bool,
-    pub changing_dir: bool,
 }
 
 impl Snake {
@@ -22,13 +21,12 @@ impl Snake {
             tick_counter: 0,
             dir: Direction::default(),
             has_eaten: false,
-            changing_dir: false,
         }
     }
 
     // If None, snake is dead.
     // But the upper limits must be checked from an outer function.
-    pub fn move_or_die(&mut self) -> Option<()> {
+    pub fn move_or_die(&mut self) -> Option<bool> {
         use Direction::*;
         let speed = self.speed;
         const SPEED_TUNER: u16 = 20;
@@ -76,17 +74,17 @@ impl Snake {
             }
 
             // Test if the snake hit itself
-            if !self.changing_dir {
-                for segment in self.body.iter().skip(1) {
-                    if new_head == *segment {
-                        return None;
-                    }
+            for segment in self.body.iter().skip(1) {
+                if new_head == *segment {
+                    return None;
                 }
-                self.changing_dir = false;
             }
+
+            Some(true)
+        } else {
+            Some(false)
         }
 
-        Some(())
     }
 
     pub fn inc_speed(&mut self) {

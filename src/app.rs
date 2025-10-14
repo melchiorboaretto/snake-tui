@@ -21,6 +21,7 @@ pub struct App {
     score: u16,
     snake: Snake,
     apple: Apple,
+    entered_key: bool,
 
     running: bool,
 }
@@ -63,15 +64,21 @@ impl App {
             let playable_area_x = temp_borders.width;
             let playable_area_y = temp_borders.height;
 
-            if let Some(()) = self.snake.move_or_die() {
+            if let Some(moved) = self.snake.move_or_die() {
                 if self.snake.body[0].0 > playable_area_x - 1
                     || self.snake.body[0].1 > playable_area_y - 1
                 {
                     self.running = false;
                 }
+
+                if moved {
+                    self.entered_key = false;
+                }
+
             } else {
                 self.running = false;
             }
+
 
             if self.apple.position() == self.snake.body[0] {
                 self.snake.eat();
@@ -150,9 +157,10 @@ impl App {
                 '[' => self.snake.dec_speed(),
                 ']' => self.snake.inc_speed(),
                 _ => {}
-            }
-        } else if self.snake.dir.change_direction_no_reverse_arrow(key.code) {
-            self.snake.changing_dir = true;
+            };
+        } else if !self.entered_key {
+            self.snake.dir.change_direction_no_reverse_arrow(key.code);
+            self.entered_key = true;
         }
     }
 
